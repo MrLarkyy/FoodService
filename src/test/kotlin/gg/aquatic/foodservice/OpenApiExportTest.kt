@@ -12,7 +12,12 @@ class OpenApiExportTest {
     @Test
     fun `export openapi json`() {
         // We don't need a real DB for this, just the router structure
-        val db = Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver")
+        val db = Database.connect(
+            "jdbc:h2:mem:test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;",
+            driver = "org.h2.Driver",
+            user = "sa",
+            password = ""
+        )
         val app = appRouter(BrandRepository(db))
         
         val response = app(Request(GET, "/openapi.json"))

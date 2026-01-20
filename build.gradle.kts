@@ -22,12 +22,12 @@ val exposedVersion = "0.61.0"
 
 dependencies {
     // http4k
-    implementation(platform("org.http4k:http4k-bom:5.35.2.0"))
+    implementation(platform("org.http4k:http4k-bom:6.26.0.0"))
     implementation("org.http4k:http4k-core")
     implementation("org.http4k:http4k-server-netty")
     implementation("org.http4k:http4k-serverless-lambda")
     implementation("org.http4k:http4k-format-kotlinx-serialization")
-    implementation("org.http4k:http4k-contract")
+    implementation("org.http4k:http4k-api-openapi")
 
     // Database
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
@@ -38,15 +38,15 @@ dependencies {
     implementation("com.zaxxer:HikariCP:7.0.2")
 
     // Util
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
-    implementation("org.slf4j:slf4j-simple:2.0.16")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+    implementation("org.slf4j:slf4j-simple:2.0.17")
 
     // Testing
     testImplementation(kotlin("test"))
     testImplementation("org.http4k:http4k-testing-kotest")
-    testImplementation("com.h2database:h2:2.3.232")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+    testImplementation("com.h2database:h2:2.4.240")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 }
 
 kotlin {

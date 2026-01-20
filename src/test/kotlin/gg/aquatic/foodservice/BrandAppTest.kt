@@ -16,7 +16,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class BrandAppTest {
-    private val db = Database.connect("jdbc:h2:mem:app_test;DB_CLOSE_DELAY=-1;", driver = "org.h2.Driver")
+    private val db = Database.connect(
+        "jdbc:h2:mem:app_test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1;",
+        driver = "org.h2.Driver",
+        user = "sa",
+        password = ""
+    )
     private val repository = BrandRepository(db)
     private val app = appRouter(repository)
 
