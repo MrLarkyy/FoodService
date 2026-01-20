@@ -95,11 +95,14 @@ graalvmNative {
         buildArgs.add("-H:+InstallExitHandlers")
         buildArgs.add("-H:+UnlockExperimentalVMOptions")
 
+        // 1. Force database and IO drivers to runtime (MANDATORY)
         buildArgs.add("--initialize-at-run-time=org.postgresql.util.SharedTimer")
         buildArgs.add("--initialize-at-run-time=java.sql.DriverManager")
-        buildArgs.add("--initialize-at-run-time=kotlin.DeprecationLevel")
-
         buildArgs.add("--initialize-at-run-time=org.postgresql.Driver")
+
+        // 2. Allow Kotlin/Stdlib classes to initialize at build time (Solves the DeprecationLevel error)
+        buildArgs.add("--initialize-at-build-time=kotlin.DeprecationLevel")
+        buildArgs.add("--initialize-at-build-time=kotlin.jvm.internal.Intrinsics")
     }
 
     // Pulling metadata of configurations from Exposed
