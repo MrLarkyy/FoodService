@@ -77,7 +77,7 @@ tasks.register<Zip>("buildNativeLambdaZip") {
     dependsOn("nativeCompile")
 
     // Find the native binary and rename it to 'bootstrap'
-    from(layout.buildDirectory.file("native/nativeCompile/${project.name}")) {
+    from(layout.buildDirectory.file("native/nativeCompile/FoodService")) {
         rename { "bootstrap" }
     }
 
@@ -92,8 +92,14 @@ tasks.register<Zip>("buildNativeLambdaZip") {
 graalvmNative {
     binaries.all {
         buildArgs.add("--no-fallback")
-        buildArgs.add("--initialize-at-build-time=org.postgresql.Driver")
         buildArgs.add("-H:+InstallExitHandlers")
+        buildArgs.add("-H:+UnlockExperimentalVMOptions")
+
+        buildArgs.add("--initialize-at-run-time=org.postgresql.util.SharedTimer")
+        buildArgs.add("--initialize-at-run-time=java.sql.DriverManager")
+        buildArgs.add("--initialize-at-run-time=kotlin.DeprecationLevel")
+
+        buildArgs.add("--initialize-at-run-time=org.postgresql.Driver")
     }
 
     // Pulling metadata of configurations from Exposed
