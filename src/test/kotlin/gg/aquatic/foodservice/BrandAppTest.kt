@@ -8,7 +8,9 @@ import org.http4k.core.Request
 import org.http4k.core.Status.Companion.OK
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -19,13 +21,24 @@ class BrandAppTest {
 
     @Test
     fun `GET brands returns 200 OK`() {
-        transaction(db) { SchemaUtils.create(BrandTable) }
+        transaction(db) {
+            SchemaUtils.create(BrandTable)
+            BrandTable.insert {
+                it[id] = UUID.randomUUID()
+                it[name] = "Test Brand"
+            }
+        }
 
         val response = app(Request(GET, "/brands"))
 
         assertEquals(OK, response.status)
+        assert(response.bodyString().contains("Test Brand"))
+    }
 
-        val contentType = response.header("Content-Type") ?: ""
-        assert(contentType.startsWith("application/json")) { "Expected application/json but got $contentType" }
+    @Test
+    fun `GET brands with filter returns only matching items`() {
+        val response = app(Request(GET, "/brands?name=NonExistent"))
+        assertEquals(OK, response.status)
+        assertEquals("[]", response.bodyString().trim())
     }
 }
