@@ -4,8 +4,10 @@ import gg.aquatic.foodservice.data.db.BrandTable
 import gg.aquatic.foodservice.data.model.Brand
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.LoggerFactory
 
 class BrandRepository(private val db: Database) {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     fun findBrands(
         name: String?,
@@ -13,6 +15,10 @@ class BrandRepository(private val db: Database) {
         sortBy: String?,
         sortDirection: String?
     ): List<Brand> = transaction(db) {
+        logger.debug(
+            "Finding brands with name={}, externalId={}, sortBy={}, sortDirection={}",
+            name, externalId, sortBy, sortDirection
+        )
         val query = BrandTable.selectAll()
 
         // Case-insensitive search
