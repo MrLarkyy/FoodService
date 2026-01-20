@@ -45,10 +45,10 @@ This project is configured to build automatically via GitHub Actions. Every push
 ### Manual AWS Lambda Deployment
 If building manually, use the following Gradle tasks:
 
-| Task                             | Output File                        | AWS Runtime                |
-|:---------------------------------|:-----------------------------------|:---------------------------|
-| `./gradlew buildLambdaZip`       | `build/dist/deployment.zip`        | Java 21                    |
-| `./gradlew buildNativeLambdaZip` | `build/dist/native-deployment.zip` | Amazon Linux 2023 (Custom) |
+| Task                             | Output File                        | AWS Runtime  |
+|:---------------------------------|:-----------------------------------|:-------------|
+| `./gradlew buildLambdaZip`       | `build/dist/deployment.zip`        | Java 21      |
+| `./gradlew buildNativeLambdaZip` | `build/dist/native-deployment.zip` | Amazon Linux |
 
 #### Handler Configuration
 Depending on your AWS trigger, use one of these handlers:
