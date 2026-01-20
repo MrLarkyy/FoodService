@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -19,20 +20,31 @@ class BrandAppTest {
     private val repository = BrandRepository(db)
     private val app = appRouter(repository)
 
-    @Test
-    fun `GET brands returns 200 OK`() {
+    @BeforeTest
+    fun setup() {
         transaction(db) {
+            SchemaUtils.drop(BrandTable)
             SchemaUtils.create(BrandTable)
+
             BrandTable.insert {
                 it[id] = UUID.randomUUID()
-                it[name] = "Test Brand"
+                it[name] = "Apple"
+                it[externalId] = "ext-1"
+            }
+            BrandTable.insert {
+                it[id] = UUID.randomUUID()
+                it[name] = "Banana"
+                it[externalId] = "ext-2"
             }
         }
+    }
 
+    @Test
+    fun `GET brands returns 200 OK`() {
         val response = app(Request(GET, "/brands"))
 
         assertEquals(OK, response.status)
-        assert(response.bodyString().contains("Test Brand"))
+        assert(response.bodyString().contains("Apple"))
     }
 
     @Test
@@ -40,5 +52,42 @@ class BrandAppTest {
         val response = app(Request(GET, "/brands?name=NonExistent"))
         assertEquals(OK, response.status)
         assertEquals("[]", response.bodyString().trim())
+    }
+
+    @Test
+    fun `test sorting`() {
+        val results = repository.findBrands(null, null, "name", "desc")
+        assertEquals("Banana", results[0].name)
+    }
+
+    @Test
+    fun `test filtering by externalId exact match`() {
+        val results = repository.findBrands(null, "ext-1", null, null)
+        assertEquals(1, results.size)
+        assertEquals("ext-1", results[0].externalId)
+    }
+
+    @Test
+    fun `test combined filtering by name and externalId`() {
+        // Should find Apple
+        val found = repository.findBrands(name = "Apple", externalId = "ext-1", null, null)
+        assertEquals(1, found.size)
+
+        // Should find nothing (Apple name with Banana externalId)
+        val notFound = repository.findBrands(name = "Apple", externalId = "ext-2", null, null)
+        assertEquals(0, notFound.size)
+    }
+
+    @Test
+    fun `test sorting by name ascending default`() {
+        val results = repository.findBrands(null, null, "name", "asc")
+        assertEquals("Apple", results[0].name)
+        assertEquals("Banana", results[1].name)
+    }
+
+    @Test
+    fun `test filtering with no results`() {
+        val results = repository.findBrands(name = "Zucchini", null, null, null)
+        assertEquals(0, results.size)
     }
 }
