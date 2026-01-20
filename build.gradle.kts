@@ -28,6 +28,7 @@ dependencies {
     implementation("org.http4k:http4k-serverless-lambda")
     implementation("org.http4k:http4k-format-kotlinx-serialization")
     implementation("org.http4k:http4k-api-openapi")
+    implementation("org.http4k:http4k-format-jackson")
 
     // Database
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")

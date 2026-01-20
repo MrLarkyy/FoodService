@@ -4,9 +4,12 @@ import gg.aquatic.foodservice.data.repository.BrandRepository
 import org.http4k.contract.contract
 import org.http4k.contract.openapi.ApiInfo
 import org.http4k.contract.openapi.v3.OpenApi3
-import org.http4k.core.*
+import org.http4k.core.Filter
+import org.http4k.core.HttpHandler
+import org.http4k.core.Response
 import org.http4k.core.Status.Companion.INTERNAL_SERVER_ERROR
-import org.http4k.format.KotlinxSerialization
+import org.http4k.core.then
+import org.http4k.format.Jackson
 import org.http4k.routing.routes
 
 /**
@@ -14,7 +17,8 @@ import org.http4k.routing.routes
  */
 fun appRouter(brandRepository: BrandRepository): HttpHandler {
     val apiContract = contract {
-        renderer = OpenApi3(ApiInfo("Brand Service API", "v1.0"), KotlinxSerialization)
+        // Have had issues with using KotlinxSerialization as format, switched to Jackson
+        renderer = OpenApi3(ApiInfo("Brand Service API", "v1.0"), Jackson)
         descriptionPath = "/openapi.json"
         routes += brandRoutes(brandRepository)
     }
